@@ -1,5 +1,5 @@
 import { Observable } from "@shared/types/observable.type";
 
-export interface IAuthenticator {
-    login(email: string, password: string): Observable<string>;
+export interface IAuthenticator<T> {
+    login(email: string, password: string): Observable<T>;
 }

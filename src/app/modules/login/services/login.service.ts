@@ -2,18 +2,25 @@ import { Injectable } from '@angular/core';
 import { IAuthenticator } from '@shared/interfaces/login/ILogin.interface';
 import { BaseService } from 'app/core/services/base-service.service';
 import { catchError, Observable, throwError } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { LoginUserDTO } from '../dtos/login.dto';
+import { TokenDTO } from '@shared/dtos/auth/token.dto';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class LoginService extends BaseService implements IAuthenticator {
+export class LoginService
+  extends BaseService
+  implements IAuthenticator<TokenDTO>
+{
+  protected endpoint = '/login';
 
-  protected endpointPrefix = '/login'; // Configura el prefijo para este servicio
+  login(email: string, password: string): Observable<TokenDTO> {
+    const loginUserDTO: LoginUserDTO = {
+      email: email,
+      password: password,
+    };
 
-  login(email: string, password: string): Observable<string> {
-    const body = { email, password };
-    return this.post<string>(this.endpointPrefix, body).pipe(
+    return this.post<TokenDTO>(this.endpoint, loginUserDTO).pipe(
       catchError((error) => {
         console.error('Error in LoginService:', error);
         return throwError(() => new Error('Login failed. Please try again.'));
